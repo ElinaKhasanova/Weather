@@ -31,20 +31,21 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
     private LocationManager locationManager;
     private CityAdapter adapter;
     private RecyclerView list;
+    private java.util.List<List> city;
     private double latitude, longitude;
-    private int numberOfCities;
+    private int NUMBER_OF_CITIES = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        city = new ArrayList<>();
         cities = new ArrayList<>();
-        list = findViewById(R.id.recycle_view);
-        adapter = new CityAdapter(this, cities);
+        list = findViewById(R.id.recycler_view);
+        adapter = new CityAdapter(this, city);
         list.setAdapter(adapter);
-
-        numberOfCities = 20;
+        getCoordinates();
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         checkPermissions();
@@ -53,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
     @Override
     protected void onResume() {
         super.onResume();
-        getCoordinates();
         getCities();
     }
 
@@ -98,13 +98,12 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
                 .build();
         OpenWeatherMapApi openWeatherMapAPI = retrofit.create(OpenWeatherMapApi.class);
 
-        Call<Cities> call = openWeatherMapAPI.getData(latitude, longitude, numberOfCities, API_KEY);
+        Call<Cities> call = openWeatherMapAPI.getData(latitude, longitude, NUMBER_OF_CITIES, API_KEY);
         call.enqueue(new Callback<Cities>() {
 
             @Override
             public void onResponse(Call<Cities> call, Response<Cities> response) {
-
-                if(response.code() != 200) {
+                if(response.isSuccessful()) {
                     Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -117,13 +116,14 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
 
             @Override
             public void onFailure(Call<Cities> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void setList(Cities cities) {
         for (List list : cities.getList()) {
-            list.add();
+            city.add(list);
         }
     }
 

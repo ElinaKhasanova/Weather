@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.elina.weatherapp.pojoClasses.Cities;
 import com.example.elina.weatherapp.pojoClasses.List;
 
 public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
@@ -16,11 +15,9 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     private final Intent intent;
     private final Context context;
     private final LayoutInflater inflater;
-    private final List<Cities> cities;
+    private final java.util.List<List> cities;
 
-    Integer position;
-
-    public CityAdapter(Context context, List<Cities> cities) {
+    public CityAdapter(Context context, java.util.List<List> cities) {
         this.context = context;
         this.cities = cities;
         this.inflater = LayoutInflater.from(context);
@@ -36,9 +33,9 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Intent intent = new Intent();
-        holder.cityName.setText();
-        holder.cityTemp.setText();
+        List list = cities.get(position);
+        holder.cityName.setText(list.getName().toString());
+        holder.cityTemp.setText(list.getMain().getTemp().toString());
     }
 
     @Override
@@ -48,7 +45,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
     @Override
     public long getItemId(int position) {
-        return cities.get(position);
+        return cities.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -64,9 +61,11 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
         @Override
         public void onClick(View view) {
-            position = getAdapterPosition();
-            intent.putExtra("name", cities.get(position).getCity());
-            intent.putExtra("name", cities.get(position);
+            intent.putExtra("name", cities.get(getAdapterPosition()).getName());
+            intent.putExtra("temp", cities.get(getAdapterPosition()).getMain().getTemp());
+            intent.putExtra("pressure", cities.get(getAdapterPosition()).getMain().getPressure());
+            intent.putExtra("humidity", cities.get(getAdapterPosition()).getMain().getHumidity());
+            intent.putExtra("wind", cities.get(getAdapterPosition()).getWind());
         }
     }
 }
