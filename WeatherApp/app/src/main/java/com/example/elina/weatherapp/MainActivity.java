@@ -10,11 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
+import com.example.elina.weatherapp.database.App;
+import com.example.elina.weatherapp.database.AppDb;
+import com.example.elina.weatherapp.database.Dao;
 import com.example.elina.weatherapp.pojoClasses.Cities;
 import com.example.elina.weatherapp.pojoClasses.Info;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,6 +41,9 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
     private double latitude, longitude;
     private int NUMBER_OF_CITIES = 20;
 
+    private AppDb appDb;
+    private Dao infoDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +58,18 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         checkPermissions();
+
+        appDb = App.getInstance().getDatabase();
+        infoDao = appDb.dao();
+
+        appDb.dao().getAll()
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<List<Info>>() {
+                    @Override
+                    public void accept(List<Info> infos) throws Exception {
+                        infos = infoDao.getAll();
+                    }
+                });
     }
 
     @Override
@@ -122,8 +143,8 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
     }
 
     private void setList(Cities cities) {
-        for (Info list : cities.getList()) {
-            city.add(list);
+        for (Info info : cities.getList()) {
+            city.add(info);
         }
     }
 
