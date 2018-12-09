@@ -1,4 +1,3 @@
-
 package com.example.elina.weatherapp.pojoClasses;
 
 import com.google.gson.annotations.Expose;

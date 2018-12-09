@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.example.elina.weatherapp.pojoClasses.Cities;
-import com.example.elina.weatherapp.pojoClasses.List;
+import com.example.elina.weatherapp.pojoClasses.Info;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
     private LocationManager locationManager;
     private CityAdapter adapter;
     private RecyclerView list;
-    private java.util.List<List> city;
+    private java.util.List<Info> city;
     private double latitude, longitude;
     private int NUMBER_OF_CITIES = 20;
 
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
     }
 
     private void setList(Cities cities) {
-        for (List list : cities.getList()) {
+        for (Info list : cities.getList()) {
             city.add(list);
         }
     }

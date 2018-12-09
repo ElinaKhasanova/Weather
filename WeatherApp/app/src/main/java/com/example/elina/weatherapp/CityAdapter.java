@@ -8,16 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.elina.weatherapp.pojoClasses.List;
+import com.example.elina.weatherapp.pojoClasses.Info;
 
 public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
     private final Intent intent;
     private final Context context;
     private final LayoutInflater inflater;
-    private final java.util.List<List> cities;
+    private final java.util.List<Info> cities;
 
-    public CityAdapter(Context context, java.util.List<List> cities) {
+    public CityAdapter(Context context, java.util.List<Info> cities) {
         this.context = context;
         this.cities = cities;
         this.inflater = LayoutInflater.from(context);
@@ -33,7 +33,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        List list = cities.get(position);
+        Info list = cities.get(position);
         holder.cityName.setText(list.getName().toString());
         holder.cityTemp.setText(list.getMain().getTemp().toString());
     }

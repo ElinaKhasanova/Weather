@@ -15,7 +15,7 @@ public class Cities {
 
     @SerializedName("list")
     @Expose
-    private java.util.List<List> list = null;
+    private java.util.List<Info> list = null;
 
     public String getMessage() {
         return message;
@@ -33,11 +33,11 @@ public class Cities {
         this.count = count;
     }
 
-    public java.util.List<List> getList() {
+    public java.util.List<Info> getList() {
         return list;
     }
 
-    public void setList(java.util.List<List> list) {
+    public void setList(java.util.List<Info> list) {
         this.list = list;
     }
 }
