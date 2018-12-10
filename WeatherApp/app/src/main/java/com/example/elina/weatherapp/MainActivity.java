@@ -58,18 +58,6 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         checkPermissions();
-
-        appDb = App.getInstance().getDatabase();
-        infoDao = appDb.dao();
-
-        appDb.dao().getAll()
-                .observeOn(Schedulers.io())
-                .subscribe(new Consumer<List<Info>>() {
-                    @Override
-                    public void accept(List<Info> infos) throws Exception {
-                        infos = infoDao.getAll();
-                    }
-                });
     }
 
     @Override
@@ -122,17 +110,24 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
         Call<Cities> call = openWeatherMapAPI.getData(latitude, longitude, NUMBER_OF_CITIES, API_KEY);
         call.enqueue(new Callback<Cities>() {
 
-            @Override
-            public void onResponse(Call<Cities> call, Response<Cities> response) {
-                if(response.isSuccessful()) {
-                    Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_LONG).show();
-                    return;
-                }
 
-                if(response.body() != null) {
-                    setList(response.body());
-                    updateList();
-                }
+            @Override
+            public void onResponse(final Call<Cities> call, Response<Cities> response) {
+
+                appDb = App.getInstance().getDatabase();
+                infoDao = appDb.dao();
+
+                appDb.dao().getAll()
+                        .map(list -> {
+                            appDb.dao().insert(call);
+                            return call;
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(list -> {
+                            setList(list);
+                            updateList();
+                        });
             }
 
             @Override

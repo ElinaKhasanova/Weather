@@ -10,16 +10,18 @@ import com.example.elina.weatherapp.pojoClasses.Info;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
+import retrofit2.Call;
 
 public interface Dao {
     @Query("SELECT * FROM cities")
-    Flowable<List<Info>> getAll();
+    Single<List<Info>> getAll();
 
     @Query("SELECT * FROM cities WHERE id = :id")
     Info getById(Integer id);
 
     @Insert
-    void insert (Info info);
+    void insert (Call info);
 
     @Update
     void update (Info info);
